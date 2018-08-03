@@ -1,0 +1,19 @@
+---
+- name: Change target ownership and permissions
+  hosts: services-7-1
+
+  vars_files:
+    - secret
+
+  become: true
+  become_user: root
+  become_method: su
+
+  tasks:
+    - name: "Change group and file permissions for Andrew Penner Lab: or_edu"
+      file: path=/dfs3/or_edu group=or_edu mode=g+rX,o-wrX state=directory recurse=yes
+
+    - name: "Change group and file permissions for Andrew Penner Lab: or_geo"
+      file: path=/dfs3/or_geo group=or_geo mode=g+rX,o-wrX state=directory recurse=yes
+
+...
