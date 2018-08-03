@@ -1,0 +1,140 @@
+---
+# Install dependencies, InfluxDB, Telegraf, Kapacitor, Chronograf
+
+#- name: TICK Stack Dependencies Install
+
+- name: InfluxDB Install
+  hosts: localhost
+  gather_facts: true
+
+  tasks:
+    - name: Setting up InfluxDB YUM repository and getting package.
+      yum_repository: 
+        name        : influxdb 
+        description : InfluxDB CentOS repo 
+        gpgkey      : https://repos.influxdata.com/influxdb.key
+        baseurl     : https://repos.influxdata.com/centos/ 
+        state       : present
+        gpgcheck    : yes
+
+    - name: Configure InfluxDB
+      replace:
+        path    : /etc/influxdb/influxdb.conf
+        regexp  : 'hostname = "localhost"'
+        replace : 'hostname = "{{ ansible_hostname }}"' 
+        backup  : yes
+
+#   Another way is to copy a pre-configured config:
+#      copy:
+#        src     : configs/influxdb.conf
+#        dest    : /etc/influxdb/influxdb.conf
+#        owner   : root
+#        group   : root
+#        mode    : 0644
+#        backup  : yes
+
+    - name: Start InfluxDB
+      service:
+        name    : influxdb
+        state   : restarted
+
+
+- name: Telegraf Install
+  hosts: localhost
+  tasks:
+    - name: Setting up Telegraf YUM repository and getting package.
+      yum_repository: 
+        name        : telegraf
+        description : Telegraf CentOS repo 
+        gpgkey      : https://repos.influxdata.com/influxdb.key
+        baseurl     : https://repos.influxdata.com/centos/ 
+        state       : present
+        gpgcheck    : yes
+    
+    - name: Copy pre-configured Telegraf config.
+      copy:
+        src     : configs/telegraf.conf
+        dest    : /etc/telegraf/telegraf.conf
+        owner   : root
+        group   : root
+        mode    : 0644
+        backup  : yes
+        force   : no
+        notify  : 
+          - restart telegraf
+
+  handlers:
+    - name: restart telegraf
+      service: 
+        name    : telegraf
+        state   : restarted
+
+
+- name: Kapacitor Install
+  hosts: localhost
+  tasks:
+    - name: Setting up Kapacitor YUM repository and getting package.
+      yum_repository: 
+        name        : kapacitor
+        description : Kapacitor CentOS repo 
+        gpgkey      : https://repos.influxdata.com/influxdb.key
+        baseurl     : https://repos.influxdata.com/centos/$releasever/$basearch/stable
+        state       : present
+        gpgcheck    : yes
+    
+    - name: Copy pre-configured Kapacitor config.
+      copy:
+        src     : configs/kapacitor.conf
+        dest    : /etc/kapacitor/kapacitor.conf
+        owner   : root
+        group   : root
+        mode    : 0644
+        backup  : yes
+        force   : no
+        notify  : 
+          - restart kapacitor
+
+  handlers:
+    - name: restart kapacitor
+      service: 
+        name    : kapacitor
+        state   : restarted
+
+
+- name: Chronograf Install
+  hosts: localhost
+#  vars_files:
+#    - secret
+#  become: true
+#  become_user: root
+#  gather_facts: true
+#  become_method: su
+
+  tasks:
+    - name: Setting up Chronograf YUM repository and getting package.
+      yum_repository: 
+        name        : chronograf
+        description : Chronograf CentOS repo 
+        gpgkey      : https://repos.influxdata.com/influxdb.key
+        baseurl     : https://repos.influxdata.com/centos/$releasever/$basearch/stable
+        state       : present
+        gpgcheck    : yes
+    
+    
+    - name: Installing Chronograf.
+      yum:
+        name        : chronograf
+        state       : present
+        #update_cache: yes
+
+      #become_user   : root
+      #become        : true
+
+    - name: Start Chronograf and Enable on Boot.
+      service:
+        name        : chronograf
+        state       : started
+        enabled     : yes
+      #become        : true
+      #become_user   : root
+...
