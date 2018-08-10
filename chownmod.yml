@@ -1,6 +1,6 @@
 ---
 - name: Change target ownership and permissions
-  hosts: services-7-1
+  hosts: localhost
 
   vars_files:
     - secret
