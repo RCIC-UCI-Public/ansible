@@ -1,0 +1,25 @@
+---
+- hosts: all
+  vars:
+    http_port: 22
+    max_clients: 200
+  remote_user: root
+  tasks:
+
+  - name: nfs mount pre-requesites
+    yum:
+      name: "{{ packages }}"
+    vars:
+      packages:
+       - nfs-utils
+  - name: Make /data
+    file:
+      path: /data
+      state: directory
+  - name: Mount up device by label
+    mount:
+      path: /data
+      src: 128.200.84.66:/data
+      fstype: nfs
+      state: present
+      opts: rw,noatime,hard,tcp,nosuid,rsize=65520,wsize=65520,vers=3
