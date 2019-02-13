@@ -1,0 +1,14 @@
+---
+- hosts: all
+  vars:
+    http_port: 22
+    max_clients: 200
+  remote_user: root
+  tasks:
+
+  - name: Install docker
+    yum:
+      name: "{{ packages }}"
+    vars:
+      packages:
+       - docker

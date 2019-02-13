@@ -1,0 +1,22 @@
+---
+- hosts: all
+  vars:
+    http_port: 22
+    max_clients: 200
+  remote_user: root
+  tasks:
+
+  - name: Add influxdb repo
+    yum_repository:
+      name: influxdb
+      description: influxdb YUM repository
+      baseurl: https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
+      gpgcheck: yes
+      gpgkey: https://repos.influxdata.com/influxdb.key
+
+  - name: yum install influxdb
+    yum:
+      name: "{{ packages }}"
+    vars:
+      packages:
+       - influxdb
