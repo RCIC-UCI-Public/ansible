@@ -1,0 +1,11 @@
+---
+- hosts: all
+  vars:
+    http_port: 22
+    max_clients: 200
+  remote_user: root
+  tasks:
+
+  - name: disable firewalld and selinux
+    shell: systemctl disable firewalld
+    shell: sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config && cat /etc/selinux/config

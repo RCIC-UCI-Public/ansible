@@ -19,7 +19,7 @@
   - name: Mount up device by label
     mount:
       path: /data
-      src: 128.200.84.66:/data
+      src: 10.1.255.160:/data
       fstype: nfs
       state: present
       opts: rw,noatime,hard,tcp,nosuid,rsize=65520,wsize=65520,vers=3

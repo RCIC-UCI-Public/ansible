@@ -6,9 +6,18 @@
   remote_user: root
   tasks:
 
+  - name: Add docker-ce repo
+    yum_repository:
+      name: docker-ce
+      description: docker-ce YUM repository
+      baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+
   - name: Install docker
     yum:
       name: "{{ packages }}"
     vars:
       packages:
-       - docker
+       - yum-utils
+       - device-mapper-persisten-data
+       - lvm2
+       - docker-ce
