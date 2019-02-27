@@ -33,13 +33,6 @@
     shell: systemctl daemon-reload
     shell: systemctl restart kubelet
 
-  - name:  add calico to kubernetes
-    shell: kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
-    shell: kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
-
-  - pause:
-    minutes: 5
-
   - name: kube join cluster (change token if needed)
     shell: kubeadm join 128.200.34.220:6443 --token fpw6m6.c30apviov5vqenmz --discovery-token-ca-cert-hash sha256:06b727eb65b29ecb822274c38e061144c3f8f4a45bc55c4a82422f58a8e0bb68
 
