@@ -13,7 +13,7 @@
       baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
       gpgcheck: yes
       repo_gpgcheck: yes
-      gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg EOF
+      gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg, https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
   - name: Install Kubernetes binaries
     yum:
       name: "{{ packages }}"
@@ -23,8 +23,8 @@
        - kubeadm
        - kubectl
 
-  - name: Reboot this machine
-    reboot:
+  #- name: Reboot this machine
+  #  reboot:
 
   - name: start and enable processes
     shell: systemctl start docker && systemctl enable docker
@@ -37,9 +37,8 @@
     shell: kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
     shell: kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
 
-  - name: wait 5 minutes
-    - pause:
-      minutes: 5
+  - pause:
+    minutes: 5
 
   - name: kube join cluster (change token if needed)
     shell: kubeadm join 128.200.34.220:6443 --token fpw6m6.c30apviov5vqenmz --discovery-token-ca-cert-hash sha256:06b727eb65b29ecb822274c38e061144c3f8f4a45bc55c4a82422f58a8e0bb68
