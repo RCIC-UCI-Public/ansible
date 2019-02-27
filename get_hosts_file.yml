@@ -1,4 +1,5 @@
--name: download etc.hosts
+---
+- name: download etc.hosts
   get_url:
     url: http://128.200.34.220:8000/etc/hosts
     dest: /etc/hosts
