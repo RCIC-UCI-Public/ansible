@@ -10,7 +10,9 @@
     yum_repository:
       name: docker-ce
       description: docker-ce YUM repository
-      baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+      baseurl: https://download.docker.com/linux/centos/7/x86_64/stable
+      gpgcheck: yes
+      gpgkey: https://download.docker.com/linux/centos/gpg
 
   - name: Install docker
     yum:
@@ -18,6 +20,6 @@
     vars:
       packages:
        - yum-utils
-       - device-mapper-persisten-data
+       - device-mapper-persistent-data
        - lvm2
        - docker-ce
