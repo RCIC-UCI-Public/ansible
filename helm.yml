@@ -1,0 +1,16 @@
+- name: make helm directory
+  shell: mkdir -p /root/helm
+
+- name: download helm script
+  get_url:
+    url: https://raw.githubusercontent.com/helm/helm/master/scripts/get
+    dest: /root/helm/get_helm.sh
+    mode: 0440
+
+- name: make get_helm.sh executable
+  shell: chmod 700 /root/helm.sh
+
+- name: run get_helm.sh
+  shell: ./get_helm.sh
+  args:
+    chdir: /root/helm

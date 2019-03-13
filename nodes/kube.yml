@@ -1,0 +1,38 @@
+---
+- hosts: all
+  vars:
+    http_port: 22
+    max_clients: 200
+  remote_user: root
+  tasks:
+
+  - name: Add kubernetes repo
+    yum_repository:
+      name: kubernetes
+      description: kube yum repo
+      baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+      gpgcheck: yes
+      repo_gpgcheck: yes
+      gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg, https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+  - name: Install Kubernetes binaries
+    yum:
+      name: "{{ packages }}"
+    vars:
+      packages:
+       - kubectl
+       - kubeadm
+       - kubectl
+
+  #- name: Reboot this machine
+  #  reboot:
+
+  - name: start and enable processes
+    shell: systemctl start docker && systemctl enable docker
+    shell: systemctl start kubelet && systemctl enable kubelet
+    shell: sed -i 's/cgroup-driver=systemd/cgroup-driver=cgroupfs/g' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    shell: systemctl daemon-reload
+    shell: systemctl restart kubelet
+
+  - name: kube join cluster (change token if needed)
+    shell: kubeadm join 128.200.34.220:6443 --token fpw6m6.c30apviov5vqenmz --discovery-token-ca-cert-hash sha256:06b727eb65b29ecb822274c38e061144c3f8f4a45bc55c4a82422f58a8e0bb68
+
