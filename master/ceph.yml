@@ -1,0 +1,6 @@
+- name: add user cephdeploy for ceph stuff
+  user:
+    name: cephdeploy
+    
+
+
